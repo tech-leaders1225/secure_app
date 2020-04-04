@@ -1,0 +1,66 @@
+<% provide(:title, '全てのユーザー') %>
+<% provide(:search_name, 'ユーザー検索') %>
+<% provide(:path, users_path) %>
+<h1>全てのユーザー</h1>
+
+<% if params[:error_users] %>
+  <a  data-toggle="modal" data-target="#sampleModal">
+	  インポートエラーログ<%= "#{params[:error_users].count}件" %>
+  </a>
+<% end %>
+
+<%= form_tag users_path, method: 'post', multipart: true do %>
+  <div class="input-group" style="width: 300px;">
+    <span class="input-group-btn">
+      <%= button_tag 'ファイル選択', class: %i(btn btn-default csv_input_btn), type: 'button', onclick: "$('#file_input').click();" %>
+    </span>
+    <%= file_field_tag 'users_file', id: "file_input", style: "display: none;", onchange: "file_selected($(this));" , required: "required" %>
+    <%= text_field_tag 'filename',"", id: "filename", disabled: true, class:"form-control", placeholder: 'CSVファイルを選択' %>
+  </div>
+  <br>
+  <%= submit_tag 'CSVをインポート', class: "btn btn-primary csv_submit" %>
+<% end %>
+
+
+
+<%= will_paginate %>
+
+<ul class="users">
+  <%= render @users %>
+</ul>
+
+<%= will_paginate %>
+
+
+<% if params[:error_users] %>
+<!-- モーダル・インポートエラー -->
+<div class="modal fade" id="sampleModal" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+				<h4 class="modal-title">エラーデータログ</h4>
+			</div>
+			<div class="modal-body">
+			  <% num = 1 %>
+          <% params[:error_users].each do |user| %>
+            <%= "#{num}件目" %><br>
+            <%= user %><br>
+            <% num+= 1 %>
+          <% end %>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+			</div>
+		</div>
+	</div>
+</div>
+<% end %>
+
+
+<script type="text/javascript">
+  function file_selected(file_field){
+    var filename = $(file_field)[0].files[0].name;
+    $("#filename").val(filename);
+  }
+</script>

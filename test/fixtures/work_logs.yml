@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  day: 2018-11-04
+  start_time: 2018-11-04 11:45:22
+  end_time: 2018-11-04 11:45:22
+  starttime_change: 2018-11-04 11:45:22
+  endtime_change: 2018-11-04 11:45:22
+  work_check: 
+
+two:
+  user_id: 1
+  day: 2018-11-04
+  start_time: 2018-11-04 11:45:22
+  end_time: 2018-11-04 11:45:22
+  starttime_change: 2018-11-04 11:45:22
+  endtime_change: 2018-11-04 11:45:22
+  work_check: 

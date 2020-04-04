@@ -1,0 +1,85 @@
+<% @name=current_user.name %>
+<% month_check_users=Work.where(month_check: @name).pluck(:user_id).uniq %>
+
+<!-- 2.モーダルの配置 -->
+<div class="modal" id="modal-monthwork" tabindex="-1">
+    <div class="modal-dialog">
+        
+        <!-- 3.モーダルのコンテンツ -->
+                 
+        
+        <%= form_tag({:controller => 'works', :action => 'update_monthwork'}, {:method => :patch}) do %>
+        
+        
+            <div class="modal-content">
+        <!-- 閉じるボタン-->
+                <button class="close" type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+        <!--ユーザー毎表示-->
+            <% month_check_users.each do |m_user| %>
+                <% user_work_months=User.find(m_user).works.where(month_check: @name).order(:day) %>
+                    <!-- 4.モーダルのヘッダ -->
+                    <div class="modal-header">
+                        
+                        <h4 class="modal-title" id="modal-label"><%= "【#{User.find(m_user).name}からの１ヵ月分勤怠申請】" %></h4>
+                    </div>
+                    <!-- 5.モーダルのボディ -->
+                    <div class="modal-body">
+                        
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <td>月</td>
+                                <td>指示者確認㊞</td>
+                                <td>変更</td>
+                                <td>勤怠を確認する</td>
+                                
+                            </tr>
+                <!--月ごと表示-->
+                                    <% user_work_months.each do |work| %>
+                                    <% if params[:status] && params[:status][:"#{work.id}"] %>
+                                       <% work.attributes = {  month_check: params[:status][:"#{work.id}"][:month_check], check_box: params[:status][:"#{work.id}"][:check_box] } if params[:status] %>
+                                    <% end %>
+                                        <tr class="top">
+                                            <!--月-->
+                                            <td id="modal-date"><%= "#{work.day.month}月"  %> </td>
+                                            <!--指示者確認㊞-->
+                                            <td>
+                                                <%= fields_for "works[]", work do |fi| %>
+                                                    <%= fi.select :month_check, [["なし", "なし"],["申請中", "#{@name}"],["承認", "#{@name}から承認済"],["否認", "否認"]], {prompt: ""}, { class: 'form-control'} %>
+                                                <% end %>
+                                            </td>
+                                            <!--変更-->
+                                            <td class="center">
+                                                <%= fields_for "works[]", work do |fi| %>
+                                                    <%= fi.check_box :check_box,{},checked_value = "true",unchecked_value = "false" %>
+                                                <% end %>
+                                            </td>
+                                            <!--勤怠を変更する-->
+                                            <td>
+                                              <%= submit_tag "確認", {class: "btn btn-primary check_btn", actionURL: "/users/#{work.user_id}/works/#{work.day}/update_monthwork"} %>
+                                            </td>
+                                        </tr>
+                                    <% end %>
+                        </table>
+                        <%= hidden_field_tag :authority, "super" %>
+                        <%= hidden_field_tag :modal, "month" %>
+                    </div>
+                <% end %>
+                <!-- 6.モーダルのフッタ -->
+                <div class="modal-footer">
+                    <!--<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>-->
+                    <%= submit_tag "変更を送信する", class: "btn btn-primary" %>
+                </div>
+            </div>
+        <% end %>
+        
+    </div>
+</div>
+<script>
+$('[actionURL]').click(function(){
+    if($(this).attr('actionURL') != ""){
+      $('form').attr('action', $(this).attr('actionURL'));
+    }
+  });
+</script>

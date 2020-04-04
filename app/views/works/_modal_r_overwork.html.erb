@@ -1,0 +1,74 @@
+
+<!-- 2.モーダルの配置 -->
+<div class="modal" id="modal1" tabindex="-1">
+    <div class="modal-dialog">
+
+        <!-- 3.モーダルのコンテンツ -->
+         <%= form_tag({:controller => 'works', :action => 'create_overwork'}, {:method => :patch}) do %>
+         <% @work=Work.new %>
+        
+        <div class="modal-content">
+            <!-- 4.モーダルのヘッダ -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modal-label">【残業申請】</h4>
+            </div>
+            <!-- 5.モーダルのボディ -->
+            <div class="modal-body">
+                
+                <table class="table table-bordered">
+                    <tr>
+                        <td>日付</td>
+                        <td>曜日</td>
+                        <td>終了予定時刻</td>
+                        <td>翌日</td>
+                        <td>業務処理内容</td>
+                        <td>指示者確認㊞</td>
+                        
+                    </tr>
+                    <tr>
+                        <td id="modal-date"></td>
+                        <td id="modal-day"></td>
+                        <td>
+                            <%= fields_for  @work do |fi| %>
+                                <%= fi.time_field :endtime_plan, {class: 'form-control', required: true}  %>
+                            <% end %>
+                        </td>
+                        <td class="center">
+                            <%= fields_for @work do |fi| %>
+                                <%= fi.check_box :check_box,{},checked_value = "true",unchecked_value = "false" %>
+                            <% end %>
+                        </td>
+                        <td>
+                            <%= fields_for  @work do |fi| %>
+                                <%= fi.text_field :work_content, {class: 'form-control'}  %>
+                            <% end %>
+                        </td>
+                        <td>
+                            <%= fields_for @work do |fi| %>
+                                <%= fi.collection_select(:over_check, User.get_sv_user_whithout_myself(session), :name, :name, {:include_blank => true}, {:required => "required"})%>
+                            <% end %>
+                        </td>
+
+                        
+                            <%= fields_for @work do |fi| %>
+                                <%= fi.hidden_field :day, :value => "",:id => "test" %>
+                            <% end %>
+                
+                    </tr>
+                
+                </table>
+            
+            </div>
+            <!-- 6.モーダルのフッタ -->
+            <div class="modal-footer">
+                <!--<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>-->
+                <%= submit_tag "申請", class: "btn btn-primary test" %>
+            </div>
+        </div>
+        <% end %>
+    </div>
+</div>
+

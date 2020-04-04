@@ -1,0 +1,86 @@
+<!-- モーダルの設定 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel">移動したい年月を選択してください。</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      
+      
+      <div class="modal-body">
+        <%= form_tag redirect_to_show_path do %>
+        <!--年の選択-->
+        <div class="input-group">
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              年 <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" id="year-select-list">
+              <li><a href="#" value="2018">2018年</a></li>
+            </ul>
+        　</div><!-- /.input-group-btn -->
+          <%= text_field_tag 'select[year]',"", {class: 'form-control', id: 'year-select', readonly: "true"} %>
+        </div><!-- /.input-group -->
+        
+        <!--月の選択-->
+        <div class="input-group">
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              月 <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" id="month-select-list">
+              <% for i in 1..12 do %>
+                <li><a href="#" value="<%= i %>"><%= i %>月</a></li>
+              <% end %>
+            </ul>
+        　</div><!-- /.input-group-btn -->
+          <%= text_field_tag 'select[month]',"", {class: 'form-control', id: 'month-select', readonly: "true"} %>
+        </div><!-- /.input-group -->
+        <%= submit_tag "移動", {class: "btn btn-primary", id: "montn_submit"} %>
+        <% end %> 
+      </div>
+      
+      
+      
+      
+      <div class="modal-footer">
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+    $(function () {
+  $("#year-select-list li a").click( function() {
+    // テキストボックスのデータを取得します
+    var getData = $(this).attr("value");
+    // 取得値をメッセージで表示します
+    $("#year-select ").val(getData);
+  });
+  
+  $("#month-select-list li a").click( function() {
+    // テキストボックスのデータを取得します
+    var getData = $(this).attr("value");
+    // 取得値をメッセージで表示します
+    $("#month-select").val(getData);
+  });
+});
+
+$('#montn_submit').click( function(){
+  var year = $('#year-select').val();
+  var month = $('#month-select').val()
+  if (year === ""){
+    alert("年を選択してください");
+    return false
+  }
+  if (month === ""){
+    alert("月を選択してください");
+    return false
+  }
+})
+
+</script>

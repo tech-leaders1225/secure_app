@@ -1,0 +1,58 @@
+<li>
+  <%= user.name %><br>
+  <% if current_user.admin? && !current_user?(user) %>
+    | <%= link_to "削除", user, class: "btn btn-primary", method: :delete,
+                                  data: { confirm: "本当に削除してもいいですか？" } %>
+  
+        <div class="panel-group" id="sampleAccordion-<%= user.id %>">
+	        <div class="panel panel-default">
+		        <div class="panel-heading">
+			        <h3 class="panel-title">
+				        <a class="btn btn-primary btn-lg btn-a" data-toggle="collapse" data-parent="#sampleAccordion-<%= user.id %>" href="#sampleAccordionCollapse1-<%= user.id %>" >
+					        編集
+				        </a>
+			        </h3>
+		        </div>
+		    <div id="sampleAccordionCollapse1-<%= user.id%>" class="panel-collapse collapse">
+    			<div class="panel-body">
+    				<%= form_for user, url: update_by_admin_user_path(user) do |f| %>
+    				  <%= f.label :名前 %>
+            <%= f.text_field :name, class: 'form-control' %>
+      
+            <%= f.label :メールアドレス %>
+            <%= f.email_field :email, class: 'form-control' %>
+            
+            <%= f.label :所属 %>
+            <%= f.text_field :team, class: 'form-control' %>
+            
+            <%= f.label :社員番号 %>
+            <%= f.text_field :worker_number, class: 'form-control' %>
+            
+            <%= f.label :カードID%>
+            <%= f.text_field :worker_id, class: 'form-control' %>
+      
+            <%= f.label :パスワード %>
+            <%= f.password_field :password, class: 'form-control' %>
+
+            <%= f.label :基本勤務時間 %>
+            <%= f.time_field :basic_work_time,{class: 'form-control'} %>
+            
+            <%= f.label :指定勤務開始時間 %>
+            <%= f.time_field :d_start_worktime,{class: 'form-control'} %>
+            
+            <%= f.label :指定勤務終了時間 %>
+            <%= f.time_field :d_end_worktime,{class: 'form-control'} %>
+            
+            <%= f.submit "編集する", class: "btn btn-primary test" %>
+            <a class="btn btn-primary" data-toggle="collapse" data-parent="#sampleAccordion-<%= user.id %>" href="#sampleAccordionCollapse1-<%= user.id %>" >
+					     閉じる
+				    </a>
+    				<% end %>
+    			</div>
+		</div>
+	</div>
+	
+</div>
+    
+  <% end %>
+</li>

@@ -1,0 +1,1 @@
+User.joins(:works).where(works:{day: Date.today, end_time: nil}).where.not(works: {start_time: nil})

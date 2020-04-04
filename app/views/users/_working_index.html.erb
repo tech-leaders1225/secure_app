@@ -1,0 +1,18 @@
+
+
+<table class="table table-bordered working-table table-striped">
+    <thead>
+        <tr>
+            <th>社員番号</th>
+            <th>名前</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% users.each do |user| %>
+        <tr>
+            <td><%= user.worker_number %></td>
+            <td><%= user.name %></td>
+        </tr>
+        <% end %>
+    </tbody>
+</table>

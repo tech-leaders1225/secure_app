@@ -1,0 +1,116 @@
+<% y = @date.year %>
+<% m = @date.month %>
+<%= form_tag user_work_path,  method: :put do %>
+<!-- 更新したレダイレクト先に編集した月のページを表示させるため、paramsを維持させる  -->
+<%= hidden_field_tag :piyo, params[:piyo] %>
+<table class="table table-bordered table-striped">		
+        <tr>
+			<td>日付</td>
+			<td>曜日</td>
+			<td>出社</td>
+			<td>退社</td>
+			<td>翌日</td>
+			<td>在社時間</td>
+			<td>備考</td>
+			<td>指示者確認㊞</td>
+		</tr>
+		
+    <!-- キーがdaysで値がcolorsの配列を作成し、CSSで各行の色分けをする  -->
+    
+		        <% days = (Date.new(y,m).all_month) %>
+                <% datas = Hash[*days.zip(@work_array).flatten(1)] %>
+                <% datas.each do |key, work| %>
+
+	<!-- workに日付ごとのレコード情報を代入し、time_fieldsのデフォルト時間を表示させる  -->
+                    <tr class="date" year="<%=key.year%>" month="<%=key.month.to_i-1%>" day="<%=key.day%>">
+  
+  
+                    <td><%=key.month%>/<%=key.day%></td>
+                    
+    <!--曜日-->
+                    <td><%= %w(日 月 火 水 木 金 土)[key.wday]%></td>
+            
+            
+    <!-- 出勤時間のフォーム  -->
+                    <td>
+                        <%= fields_for "works[]", work do |fi| %>
+                            <%= fi.time_field :start_time, {class: 'form-control'}  %>
+                        <% end %>
+                    </td>
+    <!-- 退社時間のフォーム  -->
+                    <td>
+                        <%= fields_for "works[]", work do |fi| %>
+                            <%= fi.time_field :end_time, {class: 'form-control'}  %>
+                        <% end %>
+                    </td>
+    <!--翌日のチェックボックス-->
+                    <td class="center">
+                            <%= fields_for "works[]", work do |fi| %>
+                                <%= fi.check_box :check_tomorrow,{},checked_value = "true",unchecked_value = "false" %>
+                            <% end %>
+                    </td>
+    <!-- 勤務時間の表示  -->
+          　         <td>
+                      <%=work.end_time && work.start_time && sprintf("%.2f" , BigDecimal(((work.end_time - work.start_time)/60/60).to_s).to_f) %>
+              　       <br><%= tomorrow?(work, key)%>
+          　         </td>
+    <!-- 備考のフォーム  -->
+          　         <td>
+                        <%= fields_for "works[]", work do |fi| %>
+                            <%= fi.text_field :note, {class: 'form-control', maxlength: 30}  %>
+                        <% end %>
+          　         </td>
+    <!-- 承認確認㊞ -->
+          　         <td>
+                        <%= fields_for "works[]", work do |fi| %>
+                            <%= fi.collection_select :work_check, User.get_sv_user_whithout_myself(session), :name, :name, :include_blank => true %>
+                        <% end %>
+                    </td>
+      
+                </tr>
+            <% end %>
+  
+  
+        
+        
+        
+        
+                <tr>
+                    <td rowspan="1" colspan="2"><%= sprintf("%.2f", total_works_time(y,m)) %></td><!-- 総合勤務時間の表示  -->
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><%=sprintf("%.2f", total_time(y,m).sum)%></td><!-- 在社時間の合計の表示  -->
+                    <td></td>
+                    <td></td>
+            
+                </tr>
+    
+	    </table>
+	<div style="text-align: center;">
+        <%= link_to "キャンセル", user_work_path(current_user), {class: "btn btn-primary", type: "button" } %>
+        <%= submit_tag "変更を保存する", :class => "btn btn-primary test" %>
+    </div>
+<% end %>
+
+
+<script>
+    
+    $("input, select").click(function(){
+       var year = $(this).parents("tr").attr('year');
+       var month = $(this).parents("tr").attr('month');
+       var day = $(this).parents("tr").attr('day');
+    if (new Date(year, month, day) > new Date()) {
+        alert("明日以降の勤怠は変更できません。");
+        $(this).val("");
+        return false;
+    };
+    });
+
+</script>
+
+
+
+
+
+

@@ -1,0 +1,9 @@
+<p><%= yield(:search_name) %></p>
+<%= form_tag(yield(:path), method: :get) do %>
+  <div class="input-group" style="width: 300px;">
+      <%= text_field_tag :search, params[:search], placeholder: "ユーザー検索", class: "form-control" %>
+      <span class="input-group-btn">
+          <%= button_tag "検索", :name => nil, class: "btn btn-primary" %>
+      </span>
+  </div>
+<% end %>

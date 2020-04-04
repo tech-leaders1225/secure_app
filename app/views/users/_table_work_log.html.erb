@@ -1,0 +1,36 @@
+<table class="table table-bordered table-striped">
+        <tr>
+    		<td>日付</td>
+    		<td>変更前出社時間</td>
+    		<td>変更前退社時間</td>
+    		<td>変更後出社</td>
+    		<td>変更後退社</td>
+    		<td>指示者</td>
+    		<td>承認日</td>
+    	</tr>
+    	    <% @logs.each do |log| %>
+    	        <tr>
+                    <td>
+                        <%= log.day %><!--曜日-->
+                    </td>
+                    <td>
+                        <%= log.start_time.strftime("%R") if log.start_time %><!-- 出勤時間ー変更前 -->
+                    </td>
+                    <td>
+                        <%= log.end_time.strftime("%R") if log.end_time %><!-- 退社時間ー変更前  -->
+                    </td>
+                    <td class="center">
+                       <%= log.starttime_change.strftime("%R") if log.starttime_change %><!--出社時間ー変更後-->
+                    </td>
+                    <td>
+                       <%= log.endtime_change.strftime("%R") if log.endtime_change %><!-- 退社時間ー変更後  -->
+                    </td>
+                    <td>
+                        <%= log.work_check if log %><!-- 指示者  -->
+                    </td>
+                    <td>
+                        <%= log.created_at.strftime("%F") if log.created_at %><!-- 承認日時  -->
+                    </td>
+                </tr>
+            <% end %>
+</table>

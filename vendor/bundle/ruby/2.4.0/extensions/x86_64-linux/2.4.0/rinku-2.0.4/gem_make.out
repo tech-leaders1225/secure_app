@@ -1,0 +1,19 @@
+current directory: /home/ec2-user/environment/intern/vendor/bundle/ruby/2.4.0/gems/rinku-2.0.4/ext/rinku
+/usr/local/rvm/rubies/ruby-2.4.1/bin/ruby -r ./siteconf20181030-9470-1k5x6mb.rb extconf.rb
+creating Makefile
+
+current directory: /home/ec2-user/environment/intern/vendor/bundle/ruby/2.4.0/gems/rinku-2.0.4/ext/rinku
+make "DESTDIR=" clean
+
+current directory: /home/ec2-user/environment/intern/vendor/bundle/ruby/2.4.0/gems/rinku-2.0.4/ext/rinku
+make "DESTDIR="
+compiling autolink.c
+compiling buffer.c
+compiling rinku.c
+compiling rinku_rb.c
+compiling utf8.c
+linking shared-object rinku.so
+
+current directory: /home/ec2-user/environment/intern/vendor/bundle/ruby/2.4.0/gems/rinku-2.0.4/ext/rinku
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 rinku.so ./.gem.20181030-9470-1d72vtz

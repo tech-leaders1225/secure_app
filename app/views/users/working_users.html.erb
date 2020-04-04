@@ -1,0 +1,13 @@
+<% provide(:title, '出勤中社員一覧') %>
+<% provide(:search_name, 'ユーザー検索') %>
+<% provide(:path, users_working_users_path) %>
+<h1>出勤中社員一覧</h1>
+
+<%= will_paginate %>
+
+<ul class="users">
+  <%= render 'users/search' %> 　<!-- searchパーシャル呼出 -->
+  <%= render partial:'users/working_index', locals: { users: @users } %>
+</ul>
+
+<%= will_paginate %>

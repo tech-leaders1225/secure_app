@@ -1,0 +1,47 @@
+<header class="navbar navbar-fixed-top navbar-inverse">
+  <div class="container">
+    <%= link_to "勤怠システム", root_path, id: "logo" %>
+    <div id="<%= user_name_plete %>" class="plete"><%= user_name_plete %></div>
+    
+    <nav>
+      <ul class="nav navbar-nav navbar-right">
+        <% if !logged_in? %>
+        <li><%= link_to "トップへ", root_path %></li>
+        <% end %>
+        <% if logged_in? %>
+          <% if current_user.admin? %>
+            <li><%= link_to "トップへ", root_path %></li>
+          <% else %>
+            <li><%= link_to "トップへ", user_work_path(current_user,Date.today) %></li>
+          <% end %>
+  
+      <!--管理者のリンク表示-->
+          
+        <% if current_user.admin == true %>
+        <li><%= link_to "ユーザ一覧", users_path %></li>
+        <li><%= link_to "出社社員一覧", users_working_users_path %></li>
+        <li><%= link_to "拠点情報の修正", base_edit_users_path %></li>
+        <li><%= link_to "基本情報の修正", edit_basic_info_path %></li>
+
+        <% end %>
+        
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              アカウント <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              
+              <li><%= link_to "設定", edit_user_path(current_user) %></li>
+              <li class="divider"></li>
+              <li>
+                <%= link_to "ログアウト", logout_path, method: :delete %>
+              </li>
+            </ul>
+          </li>
+        <% else %>
+          <li><%= link_to "ログイン", login_path %></li>
+        <% end %>
+      </ul>
+    </nav>
+  </div>
+</header>

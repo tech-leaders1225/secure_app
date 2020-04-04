@@ -1,0 +1,38 @@
+<% provide(:title, 'アカウント作成') %>
+<h1>アカウント作成</h1>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+          <%= form_for(@user) do |f| %>
+        <%= render 'shared/error_messages', object: @user %>
+        <%= f.hidden_field :activated, :value => true %>
+        <%= f.hidden_field :activated_at, :value => Time.zone.now %>
+      
+          <% unless User.exists? %>
+            <%= f.hidden_field :specified_work_time, :value => Time.zone.local(2018, 6, 30, 8,0)  %>
+            <%= f.hidden_field :basic_work_time, :value => Time.zone.local(2018, 6, 30, 7,30) %>
+            <%= f.hidden_field :admin, :value => true %>
+          <% end %>
+      
+            <%= f.label :名前 %>
+            <%= f.text_field :name, class: 'form-control' %>
+      
+            <%= f.label :メールアドレス %>
+            <%= f.email_field :email, class: 'form-control' %>
+            
+            <%= f.label :所属 %>
+            <%= f.text_field :team, class: 'form-control' %>
+      
+            <%= f.label :パスワード %>
+            <%= f.password_field :password, class: 'form-control' %>
+      
+            <%= f.label :password_confirmation, "パスワード（確認）" %>
+            <%= f.password_field :password_confirmation, class: 'form-control' %>
+            
+            <%= f.hidden_field :d_start_worktime, value: Time.zone.local(2018,12,1,8,00) %>
+            <%= f.hidden_field :d_end_worktime, value: Time.zone.local(2018,12,1,19,00) %>
+            
+        <%= f.submit "作成", class: "btn btn-primary test" %>
+      <% end %>
+  </div>
+</div>

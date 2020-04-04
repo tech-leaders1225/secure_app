@@ -1,0 +1,12 @@
+module StaticPagesHelper
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+end

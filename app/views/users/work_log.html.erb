@@ -1,0 +1,161 @@
+<% provide(:title, "勤怠ログ") %>
+<input name="current_user_name" type="hidden" value="<%= current_user.id %>" class='current_user_id'>
+
+
+<h1>勤怠ログ</h1>
+<button class="btn btn-default" id="reset-btn">リセット</button>
+<div class="input-group" style="width: 150px;">
+	<span class="input-group-btn">
+		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+			年
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" id="filter-year" role="menu">
+			<li><a href="#" value="2017">2017</a></li>
+			<li><a href="#" value="2018">2018</a></li>
+			<li><a href="#" value="2019">2019</a></li>
+		</ul>
+	</span>
+	<input type="text" class="form-control" id="year" placeholder="テキスト入力欄" value="2018" readonly>
+</div>
+<div class="input-group" style="width: 150px;">
+	<span class="input-group-btn">
+		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+			月
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" id="filter-month" role="menu">
+			<li><a href="#">1</a></li>
+			<li><a href="#">2</a></li>
+			<li><a href="#">3</a></li>
+			<li><a href="#">4</a></li>
+			<li><a href="#">5</a></li>
+			<li><a href="#">6</a></li>
+			<li><a href="#">7</a></li>
+			<li><a href="#">8</a></li>
+			<li><a href="#">9</a></li>
+			<li><a href="#">10</a></li>
+			<li><a href="#">11</a></li>
+			<li><a href="#">12</a></li>
+		</ul>
+	</span>
+	<input type="text" class="form-control" id="months" placeholder="テキスト入力欄" value="<%= Time.now.month %>" readonly>
+</div>
+<div class="paginate">
+    <%= render partial: 'pagenate_work_log', locals: {logs: @logs} %>
+</div>
+<div id="table_work_log">
+    <%= render partial: 'table_work_log' %>
+</div>
+<div class="paginate">
+    <%= render partial: 'pagenate_work_log', locals: {logs: @logs} %>
+</div>
+
+<script>
+USERID = $('.current_user_id').val();
+
+$('#filter-month >').on('click', function() {
+        var result = $(this).text();
+  $('#months').attr('value', result);
+  var value_year = $('#year').val()
+  var value_month = $('#months').val()
+  
+  $(function ajax(){ $.ajax({
+    type: 'GET',
+    url: "/users/" + USERID + "/work_log",
+    data: {
+      value_year: value_year,
+      value_month: value_month
+    }
+  // せいこう
+  }).done(function(data, status, xhr) {
+            $('#table_work_log').html(data.logs);
+            $('.paginate').html(data.paginator);
+          })
+  
+  // しっぱい
+    .fail(function() {
+      console.error('error');
+    })
+});
+});
+
+$('#filter-year >').on('click', function() {
+        var result = $(this).text();
+  $('#year').attr('value', result);
+  var value_year = $('#year').val();
+  var value_month = $('#months').val();
+  $(function ajax(){ $.ajax({
+    type: 'GET',
+    url: "/users/" + USERID + "/work_log",
+    data: {
+      value_year: value_year,
+      value_month: value_month
+    }
+  // せいこう
+  }).done(function(data, status, xhr) {
+            $('#table_work_log').html(data.logs);
+            $('.paginate').html(data.paginator);
+          })
+  
+  // しっぱい
+    .fail(function() {
+      console.error('error');
+    })
+});
+});
+
+
+
+$('#reset-btn').on('click', function() {
+  $('#months').attr('value', "<%= Time.zone.now.month %>");
+  $('#year').attr('value', "<%= Time.zone.now.year %>");
+  var value_year = $('#year').val()
+  var value_month = $('#months').val()
+  $(function ajax(){ $.ajax({
+    type: 'GET',
+    url: "/users/" + USERID + "/work_log",
+    data: {
+      value_year: value_year,
+      value_month: value_month
+    }
+  // せいこう
+  }).done(function(data, status, xhr) {
+            $('#table_work_log').html(data.logs);
+            $('.paginate').html(data.paginator);
+          })
+  
+  // しっぱい
+    .fail(function() {
+      console.error('error');
+    })
+});
+  
+});
+
+
+$('.paginate').on('ajax:success', function(event){
+            // console.log(params[:page]);
+            console.log("開始！");
+            // controllerでresultの中に入れたpaginatorとbooksをそれぞれ表示する
+            console.log("ここだ！");
+            $('.paginate').html(event.detail[0].paginator)
+            $('#table_work_log').html(event.detail[0].logs)
+        });
+                
+            $.ajax({
+            type: 'GET',
+            url: "/users/" + USERID + "/work_log"
+              // せいこう
+              }).done(function(data, status, xhr) {
+                  $("paginator").trigger('ajax:success', [ data, status, xhr])  // "#paginator"の中で"ajax:success"を発火させる
+                console.log("呼び出し成功");
+              })
+              // しっぱい
+                .fail(function() {
+                  console.error('error');
+                });
+                
+
+
+</script>

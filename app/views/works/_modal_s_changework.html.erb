@@ -1,0 +1,112 @@
+<% @name=current_user.name %>
+<% changework_users=Work.where(work_check: @name).pluck(:user_id).uniq %>
+
+<!-- 2.モーダルの配置 -->
+<div class="modal" id="modal-changework" tabindex="-1">
+    <div class="modal-dialog over_work">
+
+        <!-- 3.モーダルのコンテンツ -->
+        <%= form_tag({:controller => 'works', :action => 'update_changework'}, {:method => :patch}) do %>
+
+        
+        
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <% changework_users.each do |m_user| %>
+            <% user_changeworks = User.find(m_user).works.where(work_check: @name).order(:day) %>
+            <!-- 4.モーダルのヘッダ -->
+            <div class="modal-header">
+                
+                <h4 class="modal-title" id="modal-label"><%= "【#{User.find(m_user).name}からの勤怠変更申請】" %></h4>
+            </div>
+            <!-- 5.モーダルのボディ -->
+            <div class="modal-body">
+                
+                
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <td rowspan="3" colspan="1" >日付</td>
+            <td rowspan="3" colspan="1">曜日</td>
+            <td rowspan="1" colspan="4">変更前</td>
+            <td rowspan="1" colspan="4">変更後</td>
+            <td rowspan="3" colspan="1">備考</td>
+            <td rowspan="3" colspan="1">指示者確認</td>
+            <td rowspan="3" colspan="1">変更</td>
+            <td rowspan="3" colspan="1">勤怠を確認する</td>
+        </tr>
+        <tr>
+            <td rowspan="1" colspan="2">出社</td>
+            <td rowspan="1" colspan="2">退社</td>
+            <td rowspan="1" colspan="2">出社</td>
+            <td rowspan="1" colspan="2">退社</td>
+        </tr>
+        <tr>
+            <td>時</td>
+            <td>分</td>
+            <td>時</td>
+            <td>分</td>
+            <td>時</td>
+            <td>分</td>
+            <td>時</td>
+            <td>分</td>
+        </tr>
+        </thead>
+
+            <% user_changeworks.each do |work| %>
+                <% if params[:status] && params[:status][:"#{work.id}"] %>
+                    <% work.attributes = {  work_check: params[:status][:"#{work.id}"][:work_check], check_box: params[:status][:"#{work.id}"][:check_box] } if params[:status] %>
+                <% end %>
+            <!---->
+        <tr class="top">
+            <td id="modal-date"><%= "#{work.day.month}/#{work.day.day}"  %> </td><!--日付-->
+            <td id="modal-day"><%= %w(日 月 火 水 木 金 土)[work.day.wday] %> </td><!--曜日-->
+            <td><%= work.start_time.hour if work.start_time %></td><!--出社：時-->
+            <td><%= work.start_time.min if work.start_time %></td><!--分-->
+            <td><%= work.end_time.hour if work.end_time %></td><!--退社：時-->
+            <td><%= work.end_time.min if work.end_time %></td><!--分-->
+            <td><%= work.starttime_change.hour if work.starttime_change %></td><!--出社：時-->
+            <td><%= work.starttime_change.min if work.starttime_change %></td><!--分-->
+            <td><%= work.endtime_change.hour if work.endtime_change %><br><%= "(翌日)" if work.endtime_change && work.endtime_change.day == work.day.tomorrow.day %></td><!--退社：時-->
+            <td><%= work.endtime_change.min if work.endtime_change %></td><!--分-->
+            <td><%= work.note %></td><!--備考-->
+            <td>
+                <%= fields_for "works[]", work do |fi| %>
+                    <%= fi.select :work_check, [["なし", "なし"],["申請中", "#{current_user.name}"],["承認", "承認"],["否認", "否認"]], {prompt: ""}, { class: 'form-control'} %>
+                <% end %>
+            </td>
+            <td class="center">
+                <%= fields_for "works[]", work do |fi| %>
+                    <%= fi.check_box :check_box,{},checked_value = "true",unchecked_value = "false" %>
+                <% end %>
+            </td>
+            <td>
+              <%= submit_tag "確認", {class: "btn btn-primary check_btn", actionURL: "/users/#{work.user_id}/works/#{work.day}/update_changework"} %>
+            </td>
+        </tr>
+        <% end %>
+    </table>
+            <%= hidden_field_tag :authority, "super" %>
+            <%= hidden_field_tag :modal, "change_work" %>
+            
+            </div>
+            <% end %> <!--user_changeworks each-->    
+            <!-- 6.モーダルのフッタ -->
+            <div class="modal-footer">
+                <!--<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>-->
+                <%= submit_tag "変更を送信する", class: "btn btn-primary" %>
+            </div>
+        </div>
+        <% end %> <!--form_tag-->
+    </div>
+</div>
+
+<script>
+$('[actionURL]').click(function(){
+    if($(this).attr('actionURL') != ""){
+      $('form').attr('action', $(this).attr('actionURL'));
+    }
+  });
+</script>

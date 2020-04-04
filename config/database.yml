@@ -1,0 +1,33 @@
+default: &default
+  adapter: mysql2
+  encoding: utf8
+  charset: utf8
+  pool: 5
+  username: root
+  password:
+  host: localhost
+
+
+development:
+  <<: *default
+  database: sample_development #　DBの名前。「sample」の部分をアプリの名前に変更すると分かりやい
+
+test:
+  <<: *default
+  database: sample_test #　DBの名前。「sample」の部分をアプリの名前に変更すると分かりやい
+
+production:
+  <<: *default
+  port: <%= ENV['RDS_PORT'] %>
+  host: <%= ENV['RDS_HOSTNAME'] %>
+  database: <%= ENV['RDS_DB_NAME'] %>
+  username: <%= ENV['RDS_USERNAME'] %>
+  password: <%= ENV['RDS_PASSWORD'] %>
+  
+# production:
+#   <<: *default
+#   port: 3306
+#   host: aa18ommas3el3jk.clrfy79vwafb.ap-northeast-1.rds.amazonaws.com
+#   database: ebdb
+#   username: kinntai
+#   password: password

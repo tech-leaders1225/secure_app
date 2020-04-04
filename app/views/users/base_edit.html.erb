@@ -1,0 +1,62 @@
+<% provide(:title, '拠点情報の修正') %>
+<% provide(:button_text, '編集') %>
+<h1>拠点一覧</h1>
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    
+    <table class="table table-bordered working-table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>拠点番号</th>
+                <th>拠点名</th>
+                <th>勤怠種類</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @bases.each do |base| %>
+            <tr>
+                <td>
+                    <%= link_to "編集", base_edit_modal_users_path(id: base.id), method: :get, remote: true, class:"btn btn-primary" %>
+                </td>
+                <td>
+                    <%= link_to "削除", base_delete_users_path(id: base.id), class: "btn btn-primary", method: :delete,
+                    data: { confirm: "本当に削除してもいいですか？" } %>
+                </td>
+                <td><%= base.number %></td>
+                <td><%= base.name %></td>
+                <td><%= base.kind %></td>
+            </tr>
+            
+            <% end %>
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+  拠点情報の追加
+</button>
+
+<%= render 'base_add_modal' %>
+<div class="modal fade" id="myModalLabel_edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"></div>
+
+</div>
+
+<script>
+    
+    // 勤怠申請モーダルの値渡し
+    $(document).ready(function() {
+    $('.modal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget) //モーダルを呼び出すときに使われたボタンを取得
+      var date = button.data('date') //data-date の値を取得
+      
+      //Ajaxの処理はここに
+    
+      var modal = $(this)  //モーダルを取得
+      modal.find('#modal-date').text(date) //モーダルの日付に値を表示
+      
+      
+      
+    })
+    });
+    
+</script>
