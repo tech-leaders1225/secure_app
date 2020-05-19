@@ -213,7 +213,7 @@ class UsersController < ApplicationController
                                       :worker_id,
                                       :basic_work_time,
                                       :d_start_worktime,
-                                      :d_end_worktime)
+                                      :d_end_worktime, :admin)
        else
         params.require(:user).permit(:name, :email, :team, :password,
                                     :activated, :activated_at,
